@@ -9,7 +9,7 @@ const args = process.argv;
 const folderName = args[args.length - 1];
 const folder = folderName;
 
-fs.mkdirSync(folder);
+if(folderName !== '.') {fs.mkdirSync(folder); }
 
 setupPackageJson(folder);
 installDependencies(folder);
