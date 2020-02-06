@@ -28,7 +28,7 @@ function setupPackageJson(folder) {
   console.log(chalk.green('Setting up package.json'));
 
   const packageJson = {
-    name: folder === '.' ? path.basename(__dirname) : folder,
+    name: folder === '.' ? path.basename(process.cwd()) : folder,
     version: '1.0.0',
     description: '',
     main: 'src/index.js',
