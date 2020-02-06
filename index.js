@@ -22,12 +22,13 @@ setupGitignore(folder);
 setupTravis(folder);
 initGit(folder);
 initTest(folder);
+setupPublic(folder);
 
 function setupPackageJson(folder) {
   console.log(chalk.green('Setting up package.json'));
 
   const packageJson = {
-    name: folder,
+    name: folder === '.' ? path.basename(__dirname) : folder,
     version: '1.0.0',
     description: '',
     main: 'src/index.js',
@@ -67,11 +68,14 @@ function installDependencies(folder) {
     '@babel/plugin-proposal-class-properties',
     '@babel/preset-env',
     '@babel/preset-react',
+    '@types/jest',
     'autoprefixer',
     'babel-eslint',
     'babel-loader',
     'clean-webpack-plugin',
+    'copy-webpack-plugin',
     'css-loader',
+    'dotenv-webpack',
     'enzyme',
     'enzyme-adapter-react-16',
     'enzyme-to-json',
@@ -117,6 +121,8 @@ function setupWebpack(folder) {
   const webpackConfig = `
 const HtmlPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
+const CopyPlugin = require('copy-webpack-plugin');
 
 // eslint-disable-next-line
 module.exports = {
@@ -131,7 +137,13 @@ module.exports = {
   },
   plugins: [
     new HtmlPlugin({ template: './src/index.html' }),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    new Dotenv({
+      systemvars: true
+    }),
+    new CopyPlugin([
+      { from: 'public' },
+    ])
   ],
   module: {
     rules: [
@@ -477,4 +489,17 @@ function initTest(folder) {
     stdio: 'inherit'
   });
 
+}
+
+function setupPublic(folder) {
+  console.log(chalk.green('Initializing public directory'));
+
+  fs.mkdirSync(path.join(folder, 'public'));
+
+  const file = '/*  /index.html   200';
+
+  fs.writeFileSync(
+    path.join(folder, 'public/_redirects'),
+    file
+  );
 }
