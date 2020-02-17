@@ -461,6 +461,8 @@ function setupTravis(folder) {
   console.log(chalk.green('Setting up .travis.yml'));
 
   const file = `
+before_install:
+- export TZ=America/Los_Angeles
 language: node_js
 node_js: node
 `.trimStart();
